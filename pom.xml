@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.adichad</groupId>
+    <artifactId>mallet-compat</artifactId>
+    <version>0.0.1</version>
+    <name>Compatible Mallet</name>
+    <packaging>jar</packaging>
+
+    <organization>
+        <name>adichad</name>
+        <url>http://adichad.com</url>
+    </organization>
+
+    <dependencies>
+        <dependency>
+            <groupId>cc.mallet</groupId>
+            <artifactId>mallet</artifactId>
+            <version>2.0.8</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- following is to shade the outdated dependencies used by mallet-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!-- shade all dependencies of https://mvnrepository.com/artifact/cc.mallet/mallet/2.0.8 -->
+                            <relocations>
+                                <relocation>
+                                    <!-- trov4j -->
+                                    <pattern>gnu.trove</pattern>
+                                    <shadedPattern>shaded.gnu.trove</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- com.googlecode.matrix-toolkits-java -->
+                                    <pattern>no.uib.cipr</pattern>
+                                    <shadedPattern>shaded.no.uib.cipr</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- jgrapht -->
+                                    <pattern>org._3pq.jgrapht</pattern>
+                                    <shadedPattern>shaded.org._3pq.jgrapht</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- jwnl -->
+                                    <pattern>net.didion.jwnl</pattern>
+                                    <shadedPattern>shaded.net.didion.jwnl</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- junit -->
+                                    <pattern>org.junit</pattern>
+                                    <shadedPattern>shaded.org.junit</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- bsh -->
+                                    <pattern>bsh.</pattern>
+                                    <shadedPattern>shaded.bsh</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <!-- jdom -->
+                                    <pattern>org.jdom</pattern>
+                                    <shadedPattern>shaded.org.jdom</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${basedir}/target/classes/cc/mallet/util/resources
+                            </outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/mallet/</directory>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
